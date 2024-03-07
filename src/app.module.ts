@@ -6,9 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { resolve } from 'path';
 import { TagModule } from './tag/tag.module';
 import { AccountModule } from './account/account.module';
+import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
       database: resolve(__dirname, '../db/app.sqlite'),
@@ -18,6 +21,7 @@ import { AccountModule } from './account/account.module';
     AccountModule,
     ArticleModule,
     TagModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
