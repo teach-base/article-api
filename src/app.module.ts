@@ -5,6 +5,7 @@ import { ArticleModule } from './article/article.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { resolve } from 'path';
 import { TagModule } from './tag/tag.module';
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -12,9 +13,9 @@ import { TagModule } from './tag/tag.module';
       type: 'better-sqlite3',
       database: resolve(__dirname, '../db/app.sqlite'),
       autoLoadEntities: true,
-      // entities: [Article],
       synchronize: true,
     }),
+    AccountModule,
     ArticleModule,
     TagModule,
   ],
