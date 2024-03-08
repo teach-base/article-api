@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
-import { DataSource, In, Like, Repository, MoreThan } from 'typeorm';
+import { DataSource, In, Like, MoreThan, Repository } from 'typeorm';
 import {
   CreateArticleDto,
   CreateArticleFolderDto,
@@ -29,8 +25,8 @@ export class ArticleService {
   ) {}
 
   async list(query: ListArticleQueryDto, uid: number) {
-    const { pid, page = 1, page_size = 100 } = query;
-    const where = typeof pid === 'number' ? { uid, pid } : undefined;
+    const { pid = 0, page = 1, page_size = 100 } = query;
+    const where = { uid, pid };
     const total = await this.repository.count();
     const total_page = Math.ceil(total / page_size);
     const list = await this.repository.find({
@@ -180,7 +176,6 @@ export class ArticleService {
       });
     }
     return await this.repository.findOneBy({ id });
-    // return await this.readArticle(id);
   }
 
   async removeItems(ids: number[], uid: number) {
@@ -293,18 +288,19 @@ export class ArticleService {
     return {};
   }
 
-  async updateLike(id: number, like: number, uid: number) {
-    const article = await this.repository.findOneBy({ id });
-    if (article.uid !== uid) {
-      throw new UnauthorizedException();
-    }
-    article.like = like;
-    return await this.repository.save(article);
+  async updateLike(id: number, change: number, uid: number) {
+    await this.repository.increment({ uid, id }, 'like', change);
   }
   async listLike(paginationQuery: PaginationQueryDto, uid: number) {
     const where = { uid, like: MoreThan(0) };
+
     const { page, page_size } = paginationQuery;
-    const list = await this.repository.findBy(where);
+    const list = await this.repository.find({
+      where,
+      take: page_size,
+      skip: (page - 1) * page_size,
+    });
+
     const total = await this.repository.countBy(where);
     const total_page = Math.ceil(total / page_size);
     return {

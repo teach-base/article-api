@@ -13,6 +13,7 @@ import {
   CreateArticleDto,
   CreateArticleFolderDto,
   LikeArticleDto,
+  // LikeArticleDto,
   ListArticleQueryDto,
   MoveArticleDto,
   SearchArticleQueryDto,
@@ -20,6 +21,7 @@ import {
 } from './article.dto';
 import { Uid } from 'src/account/decorators/uid.decorator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+// import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('article')
 export class ArticleController {
@@ -41,6 +43,14 @@ export class ArticleController {
   @Get()
   async listArticle(@Query() query: ListArticleQueryDto, @Uid() uid: number) {
     return await this.service.list(query, uid);
+  }
+
+  @Get('like')
+  async listLike(
+    @Query() paginationQuery: PaginationQueryDto,
+    @Uid() uid: number,
+  ) {
+    return await this.service.listLike(paginationQuery, uid);
   }
 
   @Get('search')
@@ -77,14 +87,6 @@ export class ArticleController {
 
   @Post('like')
   async updateLike(@Body() fields: LikeArticleDto, @Uid() uid: number) {
-    return await this.service.updateLike(fields.id, fields.like, uid);
-  }
-
-  @Get('like')
-  async listLike(
-    @Query() paginationQuery: PaginationQueryDto,
-    @Uid() uid: number,
-  ) {
-    return await this.service.listLike(paginationQuery, uid);
+    return await this.service.updateLike(fields.id, fields.change, uid);
   }
 }

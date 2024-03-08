@@ -31,13 +31,13 @@ class CommonArticleDto {
   readonly tags: string[];
 
   @IsNumber()
-  tag_id: number;
+  readonly tag_id: number;
 
   @IsString()
-  kw: string;
+  readonly kw: string;
 
   @IsNumber()
-  like: number;
+  readonly change: number;
 
   @ArrayMinSize(1)
   @IsNumber({ allowNaN: false, allowInfinity: false }, { each: true })
@@ -77,5 +77,5 @@ export class MoveArticleDto extends PickType(CommonArticleDto, [
 
 export class LikeArticleDto extends PickType(CommonArticleDto, [
   'id',
-  'like',
+  'change',
 ]) {}
