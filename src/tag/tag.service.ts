@@ -11,11 +11,14 @@ export class TagService {
     private readonly repository: Repository<Tag>,
   ) {}
 
-  async listTag(paginationQuery: PaginationQueryDto) {
+  async listTag(paginationQuery: PaginationQueryDto, uid: number) {
     const { page = 1, page_size = 100 } = paginationQuery;
     const total = await this.repository.count();
     const total_page = Math.ceil(total / page_size);
     const list = await this.repository.find({
+      where: {
+        uid,
+      },
       take: page_size,
       skip: Math.max(0, (page - 1) * page_size),
       order: {

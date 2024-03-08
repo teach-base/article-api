@@ -1,8 +1,8 @@
 import { IntersectionType, PartialType, PickType } from '@nestjs/mapped-types';
 import {
   ArrayMaxSize,
+  ArrayMinSize,
   IsNumber,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -15,7 +15,9 @@ class CommonArticleDto {
   @MaxLength(64)
   readonly title: string;
 
-  @IsOptional()
+  @IsNumber()
+  readonly id: number;
+
   @IsNumber()
   readonly pid: number;
 
@@ -33,6 +35,13 @@ class CommonArticleDto {
 
   @IsString()
   kw: string;
+
+  @IsNumber()
+  like: number;
+
+  @ArrayMinSize(1)
+  @IsNumber({ allowNaN: false, allowInfinity: false }, { each: true })
+  readonly ids: number[];
 }
 
 export class CreateArticleDto extends IntersectionType(
@@ -52,6 +61,21 @@ export class ListArticleQueryDto extends PartialType(
   ),
 ) {}
 
+export class SearchArticleQueryDto extends IntersectionType(
+  PickType(CommonArticleDto, ['kw']),
+  PickType(PaginationQueryDto, ['page', 'page_size']),
+) {}
+
 export class UpdateArticleDto extends PartialType(
   PickType(CommonArticleDto, ['title', 'text', 'tags']),
 ) {}
+
+export class MoveArticleDto extends PickType(CommonArticleDto, [
+  'ids',
+  'pid',
+]) {}
+
+export class LikeArticleDto extends PickType(CommonArticleDto, [
+  'id',
+  'like',
+]) {}
