@@ -20,7 +20,7 @@ export class TagService {
         uid,
       },
       take: page_size,
-      skip: Math.max(0, (page - 1) * page_size),
+      skip: (page - 1) * page_size,
       order: {
         weight: 'DESC',
       },
